@@ -280,7 +280,7 @@ const UserDashboard: React.FC = () => {
 
 export default UserDashboard;*/
 
-import React, { useEffect, useState } from "react";
+/*import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../api/axiosInstance";
@@ -334,7 +334,7 @@ const UserDashboard: React.FC = () => {
 
   return (
     <div>
-      {/* Navbar */}
+      {/* Navbar *//*}
       <Navbar bg="dark" variant="dark" expand="lg">
         <Container>
           <Navbar.Brand>Research Tracker - User</Navbar.Brand>
@@ -376,7 +376,7 @@ const UserDashboard: React.FC = () => {
                   <td>{project.pi?.username || "N/A"}</td>
                   <td>{project.tags}</td>
                   <td>
-                    {/* Members can view details; PIs can manage milestones/documents */}
+                    {/* Members can view details; PIs can manage milestones/documents *//*}
                     <Button
                       size="sm"
                       variant="primary"
@@ -397,7 +397,7 @@ const UserDashboard: React.FC = () => {
           </Table>
         )}
 
-        {/* Quick Add Milestone/Document for PI or Member */}
+        {/* Quick Add Milestone/Document for PI or Member *//*}
         {user?.role !== "VIEWER" && (
           <Card className="mt-5">
             <Card.Body>
@@ -414,6 +414,169 @@ const UserDashboard: React.FC = () => {
   );
 };
 
+export default UserDashboard;*/  
+
+
+import React, { useEffect, useState } from "react";
+import axiosInstance from "../api/axiosInstance";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+
+interface Project {
+  id?: number;
+  title: string;
+  summary: string;
+  status: string;
+  startDate: string;
+  endDate: string;
+}
+
+const UserDashboard: React.FC = () => {
+  const { user, logout } = useAuth(); // from AuthContext
+  const navigate = useNavigate();
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // ✅ Fetch projects on load
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const res = await axiosInstance.get("/projects");
+        setProjects(res.data);
+      } catch (err) {
+        console.error("Error loading projects:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProjects();
+  }, []);
+
+  // ✅ Handle logout
+  const handleLogout = () => {
+    logout(); // clears token and user
+    navigate("/login"); // redirect back to login page
+  };
+
+  return (
+    <div
+      style={{
+        padding: "20px",
+        minHeight: "100vh",
+        background: "#f8fafc",
+        fontFamily: "Arial, sans-serif",
+      }}
+    >
+      {/* Top Bar */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "20px",
+          background: "#1e3a8a",
+          color: "#fff",
+          padding: "10px 20px",
+          borderRadius: "6px",
+        }}
+      >
+        <div>
+          <h2 style={{ margin: 0 }}>Research Tracker</h2>
+          <small>
+            Welcome, <strong>{user?.username}</strong> ({user?.role})
+          </small>
+        </div>
+
+        <button
+          onClick={handleLogout}
+          style={{
+            background: "#dc2626",
+            color: "#fff",
+            border: "none",
+            borderRadius: "5px",
+            padding: "8px 16px",
+            cursor: "pointer",
+            fontWeight: "bold",
+          }}
+        >
+          Logout
+        </button>
+      </div>
+
+      {/* Content */}
+      <h3 style={{ color: "#1e293b" }}>Available Research Projects</h3>
+
+      {loading ? (
+        <p>Loading projects...</p>
+      ) : projects.length === 0 ? (
+        <p>No projects available.</p>
+      ) : (
+        <table
+          style={{
+            width: "100%",
+            borderCollapse: "collapse",
+            background: "#fff",
+            boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+          }}
+        >
+          <thead>
+            <tr style={{ background: "#e2e8f0" }}>
+              <th style={{ padding: "10px", border: "1px solid #ccc" }}>ID</th>
+              <th style={{ padding: "10px", border: "1px solid #ccc" }}>Title</th>
+              <th style={{ padding: "10px", border: "1px solid #ccc" }}>Summary</th>
+              <th style={{ padding: "10px", border: "1px solid #ccc" }}>Status</th>
+              <th style={{ padding: "10px", border: "1px solid #ccc" }}>Start</th>
+              <th style={{ padding: "10px", border: "1px solid #ccc" }}>End</th>
+            </tr>
+          </thead>
+          <tbody>
+            {projects.map((p) => (
+              <tr key={p.id}>
+                <td style={{ border: "1px solid #ccc", padding: "8px" }}>{p.id}</td>
+                <td style={{ border: "1px solid #ccc", padding: "8px" }}>{p.title}</td>
+                <td style={{ border: "1px solid #ccc", padding: "8px" }}>{p.summary}</td>
+                <td style={{ border: "1px solid #ccc", padding: "8px" }}>{p.status}</td>
+                <td style={{ border: "1px solid #ccc", padding: "8px" }}>{p.startDate}</td>
+                <td style={{ border: "1px solid #ccc", padding: "8px" }}>{p.endDate}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+
+      {/* Feature Buttons */}
+      <div style={{ marginTop: "30px" }}>
+        <button
+          style={{
+            background: "#2563eb",
+            color: "#fff",
+            padding: "10px 20px",
+            border: "none",
+            borderRadius: "5px",
+            marginRight: "10px",
+            cursor: "pointer",
+          }}
+          onClick={() => alert("Milestones feature coming soon!")}
+        >
+          View Milestones
+        </button>
+
+        <button
+          style={{
+            background: "#16a34a",
+            color: "#fff",
+            padding: "10px 20px",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+          }}
+          onClick={() => alert("Documents feature coming soon!")}
+        >
+          View Documents
+        </button>
+      </div>
+    </div>
+  );
+};
+
 export default UserDashboard;
-
-
