@@ -417,7 +417,7 @@ const UserDashboard: React.FC = () => {
 export default UserDashboard;*/  
 
 
-import React, { useEffect, useState } from "react";
+/*import React, { useEffect, useState } from "react";
 import axiosInstance from "../api/axiosInstance";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -467,7 +467,7 @@ const UserDashboard: React.FC = () => {
         fontFamily: "Arial, sans-serif",
       }}
     >
-      {/* Top Bar */}
+      {/* Top Bar *//*}
       <div
         style={{
           display: "flex",
@@ -503,7 +503,7 @@ const UserDashboard: React.FC = () => {
         </button>
       </div>
 
-      {/* Content */}
+      {/* Content *//*}
       <h3 style={{ color: "#1e293b" }}>Available Research Projects</h3>
 
       {loading ? (
@@ -544,7 +544,7 @@ const UserDashboard: React.FC = () => {
         </table>
       )}
 
-      {/* Feature Buttons */}
+      {/* Feature Buttons *//*}
       <div style={{ marginTop: "30px" }}>
         <button
           style={{
@@ -579,4 +579,592 @@ const UserDashboard: React.FC = () => {
   );
 };
 
+export default UserDashboard;*/  
+
+/*import React, { useEffect, useState } from "react";
+import axiosInstance from "../api/axiosInstance";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+
+interface Project {
+  id?: number;
+  title: string;
+  summary: string;
+  status: string;
+  startDate: string;
+  endDate: string;
+}
+
+const UserDashboard: React.FC = () => {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // ✅ Fetch only this user's projects
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        // Change endpoint to user-specific route
+        const res = await axiosInstance.get(`/api/projects/user/${user?.username}`);
+        setProjects(res.data);
+      } catch (err) {
+        console.error("Error loading projects:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (user?.username) fetchProjects();
+  }, [user]);
+
+  // ✅ Handle logout
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
+  return (
+    <div
+      style={{
+        padding: "20px",
+        minHeight: "100vh",
+        background: "#f8fafc",
+        fontFamily: "Arial, sans-serif",
+      }}
+    >
+      {/* ✅ Top Bar *//*}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "20px",
+          background: "#1e3a8a",
+          color: "#fff",
+          padding: "10px 20px",
+          borderRadius: "6px",
+        }}
+      >
+        <div>
+          <h2 style={{ margin: 0 }}>Research Tracker</h2>
+          <small>
+            Welcome, <strong>{user?.username}</strong> ({user?.role})
+          </small>
+        </div>
+
+        <button
+          onClick={handleLogout}
+          style={{
+            background: "#dc2626",
+            color: "#fff",
+            border: "none",
+            borderRadius: "5px",
+            padding: "8px 16px",
+            cursor: "pointer",
+            fontWeight: "bold",
+          }}
+        >
+          Logout
+        </button>
+      </div>
+
+      {/* ✅ Projects List *//*}
+      <h3 style={{ color: "#1e293b" }}>My Assigned Projects</h3>
+
+      {loading ? (
+        <p>Loading projects...</p>
+      ) : projects.length === 0 ? (
+        <p>No assigned projects available.</p>
+      ) : (
+        <table
+          style={{
+            width: "100%",
+            borderCollapse: "collapse",
+            background: "#fff",
+            boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+          }}
+        >
+          <thead>
+            <tr style={{ background: "#e2e8f0" }}>
+              <th style={{ padding: "10px", border: "1px solid #ccc" }}>ID</th>
+              <th style={{ padding: "10px", border: "1px solid #ccc" }}>Title</th>
+              <th style={{ padding: "10px", border: "1px solid #ccc" }}>Summary</th>
+              <th style={{ padding: "10px", border: "1px solid #ccc" }}>Status</th>
+              <th style={{ padding: "10px", border: "1px solid #ccc" }}>Start</th>
+              <th style={{ padding: "10px", border: "1px solid #ccc" }}>End</th>
+              <th style={{ padding: "10px", border: "1px solid #ccc" }}>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {projects.map((p) => (
+              <tr key={p.id}>
+                <td style={{ border: "1px solid #ccc", padding: "8px" }}>{p.id}</td>
+                <td style={{ border: "1px solid #ccc", padding: "8px" }}>{p.title}</td>
+                <td style={{ border: "1px solid #ccc", padding: "8px" }}>{p.summary}</td>
+                <td style={{ border: "1px solid #ccc", padding: "8px" }}>{p.status}</td>
+                <td style={{ border: "1px solid #ccc", padding: "8px" }}>{p.startDate}</td>
+                <td style={{ border: "1px solid #ccc", padding: "8px" }}>{p.endDate}</td>
+                <td style={{ border: "1px solid #ccc", padding: "8px" }}>
+                  <button
+                    style={{
+                      background: "#2563eb",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "4px",
+                      padding: "6px 10px",
+                      marginRight: "8px",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => navigate(`/projects/${p.id}/milestones`)} // ✅ Link to milestones
+                  >
+                    View Milestones
+                  </button>
+
+                  <button
+                    style={{
+                      background: "#16a34a",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "4px",
+                      padding: "6px 10px",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => navigate(`/projects/${p.id}/documents`)} // ✅ Link to documents
+                  >
+                    View Documents
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
+};
+
+export default UserDashboard;*/   
+
+
+/*import React, { useEffect, useState } from "react";
+import axiosInstance from "../api/axiosInstance";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+
+interface Project {
+  id?: number;
+  title: string;
+  summary: string;
+  status: string;
+  startDate: string;
+  endDate: string;
+}
+
+const UserDashboard: React.FC = () => {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch only this user's projects
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const res = await axiosInstance.get(`/api/projects/user/${user?.username}`);
+        setProjects(res.data);
+      } catch (err) {
+        console.error("Error loading projects:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (user?.username) fetchProjects();
+  }, [user]);
+
+  // Logout
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
+  return (
+    <div style={{ padding: "20px", minHeight: "100vh", background: "#f8fafc", fontFamily: "Arial, sans-serif" }}>
+      {/* Top Bar *//*}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "20px",
+          background: "#1e3a8a",
+          color: "#fff",
+          padding: "10px 20px",
+          borderRadius: "6px",
+        }}
+      >
+        <div>
+          <h2 style={{ margin: 0 }}>Research Tracker</h2>
+          <small>
+            Welcome, <strong>{user?.username}</strong> ({user?.role})
+          </small>
+        </div>
+
+        <button
+          onClick={handleLogout}
+          style={{
+            background: "#dc2626",
+            color: "#fff",
+            border: "none",
+            borderRadius: "5px",
+            padding: "8px 16px",
+            cursor: "pointer",
+            fontWeight: "bold",
+          }}
+        >
+          Logout
+        </button>
+      </div>
+
+      {/* Projects List *//*}
+      <h3 style={{ color: "#1e293b" }}>My Assigned Projects</h3>
+
+      {loading ? (
+        <p>Loading projects...</p>
+      ) : projects.length === 0 ? (
+        <p>No assigned projects available.</p>
+      ) : (
+        <table
+          style={{
+            width: "100%",
+            borderCollapse: "collapse",
+            background: "#fff",
+            boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+          }}
+        >
+          <thead>
+            <tr style={{ background: "#e2e8f0" }}>
+              <th style={{ padding: "10px", border: "1px solid #ccc" }}>ID</th>
+              <th style={{ padding: "10px", border: "1px solid #ccc" }}>Title</th>
+              <th style={{ padding: "10px", border: "1px solid #ccc" }}>Summary</th>
+              <th style={{ padding: "10px", border: "1px solid #ccc" }}>Status</th>
+              <th style={{ padding: "10px", border: "1px solid #ccc" }}>Start</th>
+              <th style={{ padding: "10px", border: "1px solid #ccc" }}>End</th>
+              <th style={{ padding: "10px", border: "1px solid #ccc" }}>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {projects.map((p) => (
+              <tr key={p.id}>
+                <td style={{ border: "1px solid #ccc", padding: "8px" }}>{p.id}</td>
+                <td style={{ border: "1px solid #ccc", padding: "8px" }}>{p.title}</td>
+                <td style={{ border: "1px solid #ccc", padding: "8px" }}>{p.summary}</td>
+                <td style={{ border: "1px solid #ccc", padding: "8px" }}>{p.status}</td>
+                <td style={{ border: "1px solid #ccc", padding: "8px" }}>{p.startDate}</td>
+                <td style={{ border: "1px solid #ccc", padding: "8px" }}>{p.endDate}</td>
+                <td style={{ border: "1px solid #ccc", padding: "8px" }}>
+                  <button
+                    style={{
+                      background: "#2563eb",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "4px",
+                      padding: "6px 10px",
+                      marginRight: "8px",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => navigate(`/projects/${p.id}/milestones`)}
+                  >
+                    View Milestones
+                  </button>
+
+                  <button
+                    style={{
+                      background: "#16a34a",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "4px",
+                      padding: "6px 10px",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => navigate(`/projects/${p.id}/documents`)}
+                  >
+                    View Documents
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
+};
+
+export default UserDashboard;*/ 
+
+/*import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Container, Card, Table, Button, Alert, Spinner } from "react-bootstrap";
+import axiosInstance from "../api/axiosInstance";
+import { useAuth } from "../context/AuthContext";
+
+interface Project {
+  id?: number;
+  title: string;
+  summary: string;
+  status: string;
+  startDate: string;
+  endDate: string;
+}
+
+const UserDashboard: React.FC = () => {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string>("");
+
+  // ✅ Fetch only this user's projects (fixed for empty array)
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const res = await axiosInstance.get(`/api/projects/user/${user?.username}`);
+        console.log(res.data); // Debug: see what API returns
+        setProjects(res.data || []); // ensures empty array if API returns null/undefined
+      } catch (err) {
+        console.error("Error loading projects:", err);
+        setError("Failed to load projects.");
+        setProjects([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (user?.username) fetchProjects();
+  }, [user]);
+
+  // Logout
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
+  return (
+    <Container style={{ paddingTop: "20px", paddingBottom: "40px" }}>
+      {/* Top Bar *//*}
+      <Card className="mb-4 p-3 bg-primary text-white shadow-sm">
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div>
+            <h2 style={{ margin: 0 }}>Research Tracker</h2>
+            <small>
+              Welcome, <strong>{user?.username}</strong> ({user?.role})
+            </small>
+          </div>
+          <Button variant="danger" onClick={handleLogout}>
+            Logout
+          </Button>
+        </div>
+      </Card>
+
+      {/* Feedback *//*}
+      {error && <Alert variant="danger">{error}</Alert>}
+
+      <h3 style={{ color: "#1e293b", marginBottom: "15px" }}>My Assigned Projects</h3>
+
+      {/* Loading Spinner *//*}
+      {loading ? (
+        <div className="text-center my-3">
+          <Spinner animation="border" variant="primary" />
+        </div>
+      ) : projects.length === 0 ? (
+        <Alert variant="info">No assigned projects available.</Alert>
+      ) : (
+        <Card className="shadow-sm">
+          <Card.Body>
+            <Table striped bordered hover responsive>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Title</th>
+                  <th>Summary</th>
+                  <th>Status</th>
+                  <th>Start</th>
+                  <th>End</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {projects.map((p) => (
+                  <tr key={p.id}>
+                    <td>{p.id}</td>
+                    <td>{p.title}</td>
+                    <td>{p.summary}</td>
+                    <td>{p.status}</td>
+                    <td>{p.startDate}</td>
+                    <td>{p.endDate}</td>
+                    <td>
+                      <Button
+                        variant="primary"
+                        size="sm"
+                        className="me-2 mb-1"
+                        onClick={() => navigate(`/projects/${p.id}/milestones`)}
+                      >
+                        View Milestones
+                      </Button>
+                      <Button
+                        variant="success"
+                        size="sm"
+                        className="mb-1"
+                        onClick={() => navigate(`/projects/${p.id}/documents`)}
+                      >
+                        View Documents
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </Card.Body>
+        </Card>
+      )}
+    </Container>
+  );
+};
+
+export default UserDashboard;  */ 
+
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Container, Card, Table, Button, Alert, Spinner } from "react-bootstrap";
+import axiosInstance from "../api/axiosInstance";
+import { useAuth } from "../context/AuthContext";
+
+interface Project {
+  id?: number;
+  title: string;
+  summary: string;
+  status: string;
+  startDate: string;
+  endDate: string;
+}
+
+const UserDashboard: React.FC = () => {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string>("");
+
+  // Fetch only this user's projects
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const res = await axiosInstance.get(`/api/projects/user/${user?.username}`);
+        console.log(res.data);
+        setProjects(res.data || []);
+      } catch (err) {
+        console.error("Error loading projects:", err);
+        setError("Failed to load projects.");
+        setProjects([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (user?.username) fetchProjects();
+  }, [user]);
+
+  // Logout
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
+  return (
+    <Container style={{ paddingTop: "20px", paddingBottom: "40px" }}>
+      {/* Top Bar */}
+      <Card className="mb-4 p-3 bg-primary text-white shadow-sm">
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div>
+            <h2 style={{ margin: 0 }}>Research Tracker</h2>
+            <small>
+              Welcome, <strong>{user?.username}</strong> ({user?.role})
+            </small>
+          </div>
+          <Button variant="danger" onClick={handleLogout}>
+            Logout
+          </Button>
+        </div>
+      </Card>
+
+      {/* Feedback */}
+      {error && <Alert variant="danger">{error}</Alert>}
+
+      <h3 style={{ color: "#1e293b", marginBottom: "15px" }}>My Assigned Projects</h3>
+
+      {/* Loading Spinner */}
+      {loading ? (
+        <div className="text-center my-3">
+          <Spinner animation="border" variant="primary" />
+        </div>
+      ) : projects.length === 0 ? (
+        <Alert variant="info">No assigned projects available.</Alert>
+      ) : (
+        <Card className="shadow-sm">
+          <Card.Body>
+            <Table striped bordered hover responsive>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Title</th>
+                  <th>Summary</th>
+                  <th>Status</th>
+                  <th>Start</th>
+                  <th>End</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {projects.map((p) => (
+                  <tr key={p.id}>
+                    <td>{p.id}</td>
+                    <td>{p.title}</td>
+                    <td>{p.summary}</td>
+                    <td>{p.status}</td>
+                    <td>{p.startDate}</td>
+                    <td>{p.endDate}</td>
+                    <td>
+                      {/* Updated routes for read-only user view */}
+                      <Button
+                        variant="primary"
+                        size="sm"
+                        className="me-2 mb-1"
+                        onClick={() => navigate(`/user/projects/${p.id}/milestones`)}
+                      >
+                        View Milestones
+                      </Button>
+                      <Button
+                        variant="success"
+                        size="sm"
+                        className="mb-1"
+                        onClick={() => navigate(`/user/projects/${p.id}/documents`)}
+                      >
+                        View Documents
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </Card.Body>
+        </Card>
+      )}
+    </Container>
+  );
+};
+
 export default UserDashboard;
+
+
