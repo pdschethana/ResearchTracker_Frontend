@@ -84,9 +84,9 @@ const Register: React.FC = () => {
           style={{ width: "100%", padding: 8, marginBottom: 12 }}
         >
           <option value="MEMBER">Member</option>
-          <option value="PI">PI</option>
+          <option value="PI"></option>
           
-          <option value="ADMIN">Admin</option>
+          <option value="ADMIN"></option>
         </select>
 
         {error && <div style={{ color: "red", marginBottom: 8 }}>{error}</div>}
